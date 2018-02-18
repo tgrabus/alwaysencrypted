@@ -22,7 +22,7 @@ namespace Web.Controllers
             IQueryable<Patient> query = db.Patients;
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(x => x.SSN == search);
+                query = query.Where(x => x.LastName.StartsWith(search));
             }
 
             return View(await query.OrderBy(patient => patient.LastName)
