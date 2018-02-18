@@ -13,12 +13,21 @@ namespace Web.Controllers
     {
         private AlwaysEncryptedContext db = new AlwaysEncryptedContext();
 
-        public async Task<ActionResult> Index(int? page = null)
+        public async Task<ActionResult> Index(string search, int? page = null)
         {
             int pageSize = 25;
             int pageNumber = (page ?? 1);
+            ViewBag.CurrentFilter = search;
 
-            return View(await db.Patients.OrderBy(patient => patient.PatientId).ToPagedListAsync(pageNumber, pageSize));
+            IQueryable<Patient> query = db.Patients;
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(x => x.SSN == search);
+            }
+
+            return View(await query.OrderBy(patient => patient.LastName)
+                .ThenBy(patient => patient.FirstName)
+                .ToPagedListAsync(pageNumber, pageSize));
         }
 
         public async Task<ActionResult> Details(int? id)
