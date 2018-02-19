@@ -16,9 +16,9 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        @using (Html.BeginForm("Index", "Patients", FormMethod.Post, new { @class = "form-inline" }))
+        @using (Html.BeginForm("Index", "Patients", FormMethod.Post, new {@class = "form-inline"}))
         {
-            @Html.TextBox("search", ViewBag.CurrentFilter as string, new { type = "search", placeholder = "Search by SSN", @class = "form-control mr-sm-2" })
+            @Html.TextBox("search", ViewBag.CurrentFilter as string, new {type = "search", placeholder = "Search by SSN", @class = "form-control mr-sm-2"})
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         }
     </div>
@@ -46,37 +46,39 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SSN)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StreetAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.PatientId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.PatientId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.PatientId })
-            </td>
-        </tr>
-    }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SSN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StreetAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.PatientId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.PatientId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.PatientId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 <br />
 
-Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount | @Model.TotalItemCount records found
+
 
 @Html.PagedListPager(Model, page => Url.Action("Index",
     new { page, search = ViewBag.CurrentFilter }), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)

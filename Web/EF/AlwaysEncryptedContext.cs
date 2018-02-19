@@ -5,6 +5,13 @@ namespace Web.EF
 {
     public class AlwaysEncryptedContext : DbContext
     {
+        public AlwaysEncryptedContext()
+        {
+            Configuration.LazyLoadingEnabled = false;
+            Configuration.AutoDetectChangesEnabled = false;
+            Configuration.ProxyCreationEnabled = false;
+        }
+
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Visit> Visits { get; set; }
         public DbSet<Staff> Staff { get; set; }
