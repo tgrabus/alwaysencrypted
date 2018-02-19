@@ -5,6 +5,7 @@ using System.Net;
 using System.Web.Mvc;
 using Web.EF;
 using Web.Models;
+using Web.ViewModels;
 using X.PagedList;
 
 namespace Web.Controllers
@@ -13,21 +14,24 @@ namespace Web.Controllers
     {
         private AlwaysEncryptedContext db = new AlwaysEncryptedContext();
 
-        public async Task<ActionResult> Index(string search, int? page = null)
+        public async Task<ActionResult> Index(string search, PatientFilterColumns column = PatientFilterColumns.SSN, int? page = null)
         {
             int pageSize = 25;
             int pageNumber = (page ?? 1);
-            ViewBag.CurrentFilter = search;
 
             IQueryable<Patient> query = db.Patients;
+            
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(x => x.SSN == search);
+                query = ApplyFilter(search, column, query);
             }
 
-            return View(await query.OrderBy(patient => patient.LastName)
+            var patients = await query.OrderBy(patient => patient.LastName)
                 .ThenBy(patient => patient.FirstName)
-                .ToPagedListAsync(pageNumber, pageSize));
+                .ToPagedListAsync(pageNumber, pageSize);
+
+            var viewModel = new PatientListViewModel(patients, search, column);
+            return View(viewModel);
         }
 
         public async Task<ActionResult> Details(int? id)
@@ -125,6 +129,22 @@ namespace Web.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private IQueryable<Patient> ApplyFilter(string search, PatientFilterColumns filterColumn, IQueryable<Patient> query)
+        {
+            search = search.Trim();
+            switch (filterColumn)
+            {
+                case PatientFilterColumns.LASTNAME:
+                    query = query.Where(x => x.LastName.StartsWith(search));
+                    break;
+                default:
+                    query = query.Where(x => x.SSN.Equals(search));
+                    break;
+            }
+
+            return query;
         }
     }
 }
