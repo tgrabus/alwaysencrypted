@@ -1,14 +1,11 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Error</title>
-</head>
-<body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
-</body>
-</html>
+﻿@model HandleErrorInfo
+
+<div class="container">
+    <h1>Error details:</h1>
+    @if (Model != null)
+    {
+        <h4>@Model.Exception.Message</h4>
+        <p>@Model.Exception.InnerException.Message</p>       
+    }
+</div>
+
