@@ -15,7 +15,6 @@ namespace Web.Models
         public string City { get; set; }
         public string State { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime BirthDate { get; set; }
 
         public List<Visit> Visits { get; set; }

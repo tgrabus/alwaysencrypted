@@ -55,11 +55,11 @@ namespace Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "PatientId,SSN,FirstName,LastName,MiddleName,StreetAddress,City,State,BirthDate")] Patient patient)
+        public async Task<ActionResult> Create(PatientCreateViewModel patient)
         {
             if (ModelState.IsValid)
             {
-                db.Patients.Add(patient);
+                db.Patients.Add(patient.MapToPatient());
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -78,16 +78,17 @@ namespace Web.Controllers
             {
                 return HttpNotFound();
             }
-            return View(patient);
+            return View(new PatientEditViewModel(patient));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "PatientId,SSN,FirstName,LastName,MiddleName,StreetAddress,City,State,BirthDate")] Patient patient)
+        public async Task<ActionResult> Edit(PatientEditViewModel patient)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(patient).State = EntityState.Modified;
+                var dbPatient = patient.MapToPatient();
+                db.Entry(dbPatient).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -105,7 +106,7 @@ namespace Web.Controllers
             {
                 return HttpNotFound();
             }
-            return View(patient);
+            return View(new PatientDeleteViewModel(patient));
         }
 
         [HttpPost, ActionName("Delete")]

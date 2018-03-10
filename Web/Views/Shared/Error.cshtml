@@ -5,7 +5,10 @@
     @if (Model != null)
     {
         <h4>@Model.Exception.Message</h4>
-        <p>@Model.Exception.InnerException.Message</p>       
+        if (Model.Exception.InnerException != null)
+        {
+            <p>@Model.Exception.InnerException.Message</p>
+        }
     }
 </div>
 
